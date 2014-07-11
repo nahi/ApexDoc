@@ -64,7 +64,7 @@ public class Constants {
 										"</center></body></html>";
 	public static final String ROOT_DIRECOTRY = "ApexDocumentation";
 	public static final String DEFAULT_HOME_CONTENTS = "<h1>Project Home</h2>";
-	public static final String PROJECT_DETAIL = "<h2 style='margin:0px;'>Project Demo</h2>" +
+	public static final String PROJECT_DETAIL = "<h2 style='margin:0px;'>ApexDoc Document</h2>" +
 												"Check out the Google code project at:<br/>" + 
 												"<a href='http://code.google.com/p/apexdoc/'>http://code.google.com/p/apexdoc/</a><br/>";
 	public static String getHeader(String projectDetail){
