@@ -272,20 +272,17 @@ public class FileManager {
 	public ArrayList<File> getFiles(String path) {
 		File folder = new File(path);
 		ArrayList<File> listOfFilesToCopy = new ArrayList<File>();
-		if (folder != null) {
-			File[] listOfFiles = folder.listFiles();
-			if (listOfFiles != null && listOfFiles.length > 0) {
-				for (int i = 0; i < listOfFiles.length; i++) {
-					if (listOfFiles[i].getName().indexOf("TEST") == -1
-							&& listOfFiles[i].isFile()) {
-						listOfFilesToCopy.add(listOfFiles[i]);
-					}
+		File[] listOfFiles = folder.listFiles();
+		if (listOfFiles != null && listOfFiles.length > 0) {
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].getName().indexOf("TEST") == -1
+						&& listOfFiles[i].isFile()) {
+					listOfFilesToCopy.add(listOfFiles[i]);
 				}
 			}
-			Collections.sort(listOfFilesToCopy);
-			return listOfFilesToCopy;
 		}
-		return null;
+		Collections.sort(listOfFilesToCopy);
+		return listOfFilesToCopy;
 	}
 
 	public void createDoc(ArrayList<ClassModel> cModels, String projectDetail,
@@ -323,6 +320,7 @@ public class FileManager {
 					}
 
 				}
+				br.close();
 				return contents;
 			}
 		} catch (Exception e) {
@@ -350,7 +348,7 @@ public class FileManager {
 						contents += strLine;
 					}
 				}
-				// System.out.println("Contents = " + contents);
+				br.close();
 				return contents;
 			}
 		} catch (Exception e) {
