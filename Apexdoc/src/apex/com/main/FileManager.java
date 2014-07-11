@@ -40,7 +40,7 @@ public class FileManager {
 			File file= new File(fileName);
 			fos = new FileOutputStream(file);
 		    dos=new DataOutputStream(fos);
-		    dos.writeBytes(contents);
+		    dos.write(contents.getBytes());
 		    dos.close();
 		    fos.close();
 		     
@@ -112,14 +112,21 @@ public class FileManager {
 			if(cModel.getNameLine() != null && cModel.getNameLine().length() > 0){
 				fileName = cModel.getClassName();
 				contents += "<td width='80%'>";
-				contents += "<h2 class='section-title'>" + cModel.getClassName() + 
-							 	"<span style='float:right;margin-top:-5px;'><input type='button' value='+/- all' onclick='ToggleAll();' /></span>" +
-							"</h2>" +
-							"<table class='details' rules='all' border='1' cellpadding='6'>" +
-								"<tr><th>Author</th><td>" + cModel.getAuthor() + "</td></tr>" +
-								"<tr><th>Date</th><td>" + cModel.getDate() + "</td></tr>" +
-								"<tr><th>Description</th><td>" + cModel.getDescription() + "</td></tr>" +
-							"</table>";
+				contents += "<h2 class='section-title'>"
+						+ cModel.getClassName()
+						+ "<span style='float:right;margin-top:-5px;'><input type='button' value='+/- all' onclick='ToggleAll();' /></span>"
+						+ "</h2>"
+						+ "<table class='details' rules='all' border='1' cellpadding='6'>";
+				if (!cModel.getAuthor().isEmpty()) {
+					contents += "<tr><th>Author</th><td>" + cModel.getAuthor()
+							+ "</td></tr>";
+				}
+				if (!cModel.getDate().isEmpty()) {
+					contents += "<tr><th>Date</th><td>" + cModel.getDate()
+							+ "</td></tr>";
+				}
+				contents += "<tr><th>Description</th><td>"
+						+ cModel.getDescription() + "</td></tr>" + "</table>";
 				
 				contents += "<p></p>" +
 							"<h2 class='trigger'><input type='button' value='+' style='width:24px' />&nbsp;&nbsp;<a href='#'>Properties</a></h2>" + 
@@ -242,11 +249,12 @@ public class FileManager {
 			File[] listOfFiles = folder.listFiles();
 			if(listOfFiles != null && listOfFiles.length > 0){ 
 				for(int i = 0; i < listOfFiles.length; i++){
-					if (listOfFiles[i].isFile()){
+					if (listOfFiles[i].getName().indexOf("TEST") == -1 && listOfFiles[i].isFile()){
 						listOfFilesToCopy.add(listOfFiles[i]);
 					}
 				}
 			}
+			Collections.sort(listOfFilesToCopy);
 			return listOfFilesToCopy;
 		  }
 		 return null;

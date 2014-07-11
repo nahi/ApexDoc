@@ -145,26 +145,35 @@ public class ApexDoc {
 		    // 		in apex, methods that start with get and take no params, or set with 1 param, are actually properties.
 		    //
 
-	    
+		    boolean lineCommentsStarted = false;
 		    while ((strLine = br.readLine()) != null)   {
 		    
 		    	strLine = strLine.trim();
-		    	if (strLine.length() == 0) 
+		    	if (strLine.length() == 0) {
+					if (lineCommentsStarted) {
+						lineCommentsStarted = false;
+						lstComments.clear();
+					}
 		    		continue;
-		    	
-		    	// ignore anything after // style comments.  this allows hiding of tokens from ApexDoc.
-		    	int ich = strLine.indexOf("//");
-		    	if (ich > -1) {
-	    			strLine = strLine.substring(0, ich);
 		    	}
 		    	
+		    	// ignore anything after // style comments.  this allows hiding of tokens from ApexDoc.
+		    	int ich = strLine.trim().indexOf("//");
+		    	if (ich > 0) {
+	    			strLine = strLine.substring(0, strLine.indexOf("//"));
+		    	} else if (ich == 0) {
+		    		lineCommentsStarted = true;
+		    		lstComments.add(strLine.trim().substring(2) + "<br/>\n");
+		    		continue;
+		    	}
+
 		    	// gather up our comments
-		    	if (strLine.startsWith("/**")) {
+		    	if (strLine.startsWith("/*")) {
 		    		commentsStarted = true;
 		    		lstComments.clear();
 		    		continue;
 		    	}
-		    	
+
 		    	if (commentsStarted && strLine.endsWith("*/")) {
 		    		commentsStarted = false;
 		    		continue;
@@ -216,7 +225,7 @@ public class ApexDoc {
 		    	PropertyModel propertyModel = new PropertyModel();
 		    	fillPropertyModel(propertyModel, strLine, lstComments);
 		    	properties.add(propertyModel);
-		    	lstComments.clear();
+		    	lstComments.clear();		    	
 		    	continue;
 		    }
 		    cModel.setMethods(methods);
@@ -244,7 +253,7 @@ public class ApexDoc {
 	
 	private static void fillPropertyModel(PropertyModel propertyModel, String name, ArrayList<String> lstComments) {
 		propertyModel.setNameLine(name);
-		boolean inDescription = false;
+		boolean inDescription = true;
 		for (String comment : lstComments) {
 			comment = comment.trim();
 			int idxStart = comment.toLowerCase().indexOf("* @description");
@@ -272,7 +281,7 @@ public class ApexDoc {
 	
 	private static void fillMethodModel(MethodModel mModel, String name, ArrayList<String> lstComments){
 		mModel.setNameLine(name);
-		boolean inDescription = false;
+		boolean inDescription = true;
 		for (String comment : lstComments) {
 			comment = comment.trim();
 			int idxStart = comment.toLowerCase().indexOf("* @description");
@@ -323,13 +332,11 @@ public class ApexDoc {
 				}
 				continue;
 			}
-			//System.out.println("#### ::" + comment);
 		}
 	}
 	private static void fillClassModel(ClassModel cModel, String name, ArrayList<String> lstComments){
-		//System.out.println("@@@@ " + name);
 		cModel.setNameLine(name);
-		boolean inDescription = false;
+		boolean inDescription = true;
 		for (String comment : lstComments) {
 			comment = comment.trim();
 			int idxStart = comment.toLowerCase().indexOf("* @description");
@@ -355,6 +362,7 @@ public class ApexDoc {
 			
 			// handle multiple lines for description.
 			if (inDescription) {
+				System.out.println(inDescription);
 				int i;
 				for (i = 0; i < comment.length(); i++) {
 					char ch = comment.charAt(i);
@@ -366,7 +374,6 @@ public class ApexDoc {
 				}
 				continue;
 			}
-			//System.out.println("#### ::" + comment);
 		}
 	}
 
