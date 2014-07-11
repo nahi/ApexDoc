@@ -10,10 +10,8 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 //import java.util.regex.Pattern;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.operation.*;
 
-public class ApexDoc implements IRunnableWithProgress {
+public class ApexDoc {
 
 	public static FileManager fm;
 	public static String[] rgstrScope;
@@ -32,7 +30,7 @@ public class ApexDoc implements IRunnableWithProgress {
 	// public entry point when called from the command line.
 	public static void main(String[] args) {
 		try {
-			RunApexDoc(args, null);
+			RunApexDoc(args);
 		} catch(Exception ex) {
 			ex.printStackTrace();
 			System.out.println(ex.getMessage());
@@ -44,12 +42,12 @@ public class ApexDoc implements IRunnableWithProgress {
 	
 	// public entry point when called from the Eclipse PlugIn.
 	// assumes PlugIn previously sets rgstrArgs before calling run.
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,	InterruptedException {
-		RunApexDoc(rgstrArgs, monitor);
+	public void run() throws InvocationTargetException,	InterruptedException {
+		RunApexDoc(rgstrArgs);
 	}	
 
 	// public main routine which is used by both command line invocation and Eclipse PlugIn invocation
-	public static void RunApexDoc(String[] args, IProgressMonitor monitor) {
+	public static void RunApexDoc(String[] args) {
 		String sourceDirectory = "";
 		String targetDirectory = "";
 		String homefilepath = "";
@@ -89,12 +87,6 @@ public class ApexDoc implements IRunnableWithProgress {
 		ArrayList<File> files = fm.getFiles(sourceDirectory);
 		ArrayList<ClassModel> cModels = new ArrayList<ClassModel>();
 
-		if (monitor != null) {
-			// each file is parsed, html created, written to disk.
-			// but for each class file, there is an xml file we'll ignore.
-			// plus we add 2 for the author file and home file loading.
-			monitor.beginTask("ApexDoc - documenting your Apex Class files.", (files.size()/2) * 3 + 2);
-		}
 		// parse each file, creating a class model for it
 		for (File fromFile : files) {
 			String fromFileName = fromFile.getAbsolutePath();
@@ -103,19 +95,15 @@ public class ApexDoc implements IRunnableWithProgress {
 				if (cModel != null) {
 					cModels.add(cModel);
 				}
-			}				
-			if (monitor != null) monitor.worked(1);
+			}	
 		}
 		
 		// load up optional specified file templates
 		String projectDetail = fm.parseProjectDetail(authorfilepath);
-		if (monitor != null) monitor.worked(1);
 		String homeContents = fm.parseHTMLFile(homefilepath);
-		if (monitor != null) monitor.worked(1);
 		
 		// create our set of HTML files
-		fm.createDoc(cModels, projectDetail, homeContents, monitor);
-		if (monitor != null) monitor.done();
+		fm.createDoc(cModels, projectDetail, homeContents);
 		
 		// we are done!
 	    System.out.println("ApexDoc has completed!");		

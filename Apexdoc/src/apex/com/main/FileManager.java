@@ -2,8 +2,6 @@ package apex.com.main;
 import java.io.*;
 import java.util.*;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-
 public class FileManager {
 	FileOutputStream fos; 
     DataOutputStream dos;
@@ -56,7 +54,7 @@ public class FileManager {
 		return false;
 	}
 	
-	public boolean createHTML(Hashtable<String, String> classHashTable,  IProgressMonitor monitor){
+	public boolean createHTML(Hashtable<String, String> classHashTable){
 		try{
 			if(path.endsWith("/") || path.endsWith("\\")){
 				path += Constants.ROOT_DIRECOTRY; // + "/" + fileName + ".html";
@@ -72,12 +70,11 @@ public class FileManager {
 				File file= new File(fileName);
 				fos = new FileOutputStream(file);
 			    dos=new DataOutputStream(fos);
-			    dos.writeBytes(contents);
+			    dos.write(contents.getBytes());
 			    dos.close();
 			    fos.close();
 			    infoMessages.append(fileName + " Processed...\n");
-			    System.out.println(fileName + " Processed...");
-				if (monitor != null) monitor.worked(1);			    
+			    System.out.println(fileName + " Processed...");  
 			}
 			copy(path);
 		    return true;
@@ -90,7 +87,7 @@ public class FileManager {
 	}
 	
 	
-	public void makeFile(ArrayList<ClassModel> cModels, String projectDetail, String homeContents, IProgressMonitor monitor){
+	public void makeFile(ArrayList<ClassModel> cModels, String projectDetail, String homeContents){
 		//System.out.println("Class::::::::::::::::::::::::");
 		String links = "<table width='100%'><tr style='vertical-align:top;'>" ;
 		links += getPageLinks(cModels);
@@ -187,9 +184,8 @@ public class FileManager {
 		
 			contents = Constants.getHeader(projectDetail) + contents + Constants.FOOTER;
 			classHashTable.put(fileName, contents);
-			if (monitor != null) monitor.worked(1);
 		}
-		createHTML(classHashTable, monitor);
+		createHTML(classHashTable);
 	}
 	
 	public String getPageLinks(ArrayList<ClassModel> cModels){
@@ -258,8 +254,8 @@ public class FileManager {
 	
 	
 	
-	public void createDoc(ArrayList<ClassModel> cModels, String projectDetail, String homeContents, IProgressMonitor monitor){
-		makeFile(cModels, projectDetail, homeContents, monitor);
+	public void createDoc(ArrayList<ClassModel> cModels, String projectDetail, String homeContents){
+		makeFile(cModels, projectDetail, homeContents);
 	}
 	
 	public String parseProjectDetail(String filePath){

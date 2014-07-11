@@ -282,7 +282,7 @@ public class ApexDocForm extends ApplicationWindow {
 	        	       		        	
 	        	//ApexDoc.RunApexDoc(rgstrArgs);
 	        	ApexDoc.rgstrArgs = rgstrArgs;
-	        	new ProgressMonitorDialog(form.getShell()).run(true, false, new ApexDoc()); 
+	        	//new ProgressMonitorDialog(form.getShell()).run(true, false, new ApexDoc()); 
 	        	
 				//ApexDoc.fm.infoMessages.append(".................................\n");
 				//ApexDoc.fm.infoMessages.append("DONE");
